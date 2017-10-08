@@ -1,0 +1,27 @@
+name: plantuml-haskell
+version: 0.0.1
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.7
+
+library:
+  source-dirs: src
+
+tests:
+  test:
+    main: Tasty.hs
+    source-dirs: test
+    dependencies:
+    - base
+    - tasty
+    - tasty-discover
+    - tasty-hspec
+    - tasty-hunit
+    - tasty-quickcheck
+    - tasty-smallcheck
+    - tasty-hedgehog
+    - hedgehog
+
+  
