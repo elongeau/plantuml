@@ -1,0 +1,9 @@
+= plantuml-haskell
+
+A pet projet to generate **PlantUML** diagram with **Haskell**
+
+== What is PlantUML ?
+
+http://plantuml.com/[PlantUML] is a tool to generate UML diagram from text description.
+
+
