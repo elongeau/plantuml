@@ -6,4 +6,11 @@ A pet projet to generate **PlantUML** diagram with **Haskell**
 
 http://plantuml.com/[PlantUML] is a tool to generate UML diagram from text description.
 
+== Roadmap
 
+target features:
+
+. simple class diagram with just class name and links
+. add properties to class
+. add method to class
+. allow to link classes with different kind of relation
