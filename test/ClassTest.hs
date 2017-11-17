@@ -14,7 +14,6 @@ data Class =
 
 data Relation = 
     Relation Class Class 
-    deriving Show
 
 classOf :: String -> Class
 classOf name = Class name
@@ -24,6 +23,9 @@ box clazz = Box clazz
 
 instance Show Class where
     show (Class name) = "class " ++ name 
+
+instance Show Relation where
+    show (Relation c1 c2) = name c1 ++ " --> " ++ name c2
 
 instance Show Entity where 
     show (Box clazz) = show clazz
@@ -36,3 +38,17 @@ unit_create_a_simple_diagram :: IO ()
 unit_create_a_simple_diagram = 
     res @?= unlines [ "class Foo" ]
         where res = show $ ClassDiagram [ box $ classOf "Foo" ]
+
+unit_create_two_linked_class :: IO ()
+unit_create_two_linked_class = 
+    let
+        foo = classOf "Foo"
+        bar = classOf "Bar"
+        rel = Relation foo bar
+        diag = ClassDiagram [ Box foo, Box bar , Link rel ]
+    in 
+        show diag @?= unlines [
+            "class Foo", 
+            "class Bar",
+            "Foo --> Bar"
+        ]
