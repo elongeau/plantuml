@@ -25,7 +25,7 @@ instance Show Class where
     show (Class name) = "class " ++ name 
 
 instance Show Relation where
-    show (Relation c1 c2) = name c1 ++ " --> " ++ name c2
+    show (Relation c1 c2) = name c1 ++ " -> " ++ name c2
 
 instance Show Entity where 
     show (Box clazz) = show clazz
@@ -50,5 +50,5 @@ unit_create_two_linked_class =
         show diag @?= unlines [
             "class Foo", 
             "class Bar",
-            "Foo --> Bar"
+            "Foo -> Bar"
         ]
