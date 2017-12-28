@@ -23,5 +23,6 @@ tests:
     - tasty-smallcheck
     - tasty-hedgehog
     - hedgehog
+    - plantuml-haskell
 
   

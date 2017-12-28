@@ -21,7 +21,7 @@ cabal.sandbox.config
 .stack-work/
 cabal.project.local
 .HTF/
+*.cabal
 
 # End of https://www.gitignore.io/api/haskell
-
 *-nocommit.*
