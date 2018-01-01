@@ -4,7 +4,7 @@
 
 module PlantUml.ClassDiagram where
 
-data Diagram a =
+newtype Diagram a =
    Diagram [a]
    deriving (Show, Eq)
 
