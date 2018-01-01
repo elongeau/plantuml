@@ -26,3 +26,16 @@ unit_create_two_linked_class =
             "class Bar",
             "Foo -> Bar"
         ]
+
+unit_be_an_applicatuve :: IO ()
+unit_be_an_applicatuve =
+    let
+        foo = Class "Foo"
+        bar = Class "Bar"
+        diag1 = Diagram [ Plantumlable foo ]
+        f (Plantumlable c) = show c
+        diag2 = Diagram [ f ]
+    in
+        diag2 <*> diag1 @?= Diagram [ "Class {className = \"Foo\"}" ]
+
+        
