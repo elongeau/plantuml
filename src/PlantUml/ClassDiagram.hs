@@ -16,6 +16,14 @@ data Item =
 data Link = 
     Link Item Item
     deriving (Eq, Show)
+
+initialDiagram :: Diagram
+initialDiagram =
+    Diagram [] []
+
+addClass :: Diagram -> String -> Diagram
+addClass (Diagram items links) className = 
+    Diagram { items = Class className : items, links = links}
     
 class PlantUmlable a where
     toPlantuml :: a -> String
