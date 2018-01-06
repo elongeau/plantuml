@@ -22,21 +22,28 @@ initialDiagram =
     Diagram [] []
 
 addClass :: Diagram -> String -> Diagram
-addClass (Diagram items links) className = 
-    Diagram { items = Class className : items, links = links}
+addClass d@(Diagram items _) className = 
+    d { items = Class className : items}
     
+addLink :: Diagram -> Item -> Item -> Diagram
+addLink d@(Diagram _ links) i1 i2 =
+    d { links = Link i1 i2 : links }
+
 class PlantUmlable a where
     toPlantuml :: a -> String
     
 instance PlantUmlable Diagram where
-    toPlantuml :: Diagram -> String
     toPlantuml (Diagram items links) = 
         let
-            items' = unlines . map toPlantuml $ items
+            items' = reverse . map toPlantuml $ items
+            links' = map toPlantuml links
         in
-            items'
+            unlines $ items' ++ links'
 
 instance PlantUmlable Item where
-    toPlantuml :: Item -> String
     toPlantuml (Class className) = 
         "class " ++ className
+
+instance PlantUmlable Link where
+    toPlantuml (Link (Class c1) (Class c2)) =
+        c1 ++ " -> " ++ c2
