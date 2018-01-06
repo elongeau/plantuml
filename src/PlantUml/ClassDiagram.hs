@@ -21,13 +21,13 @@ initialDiagram :: Diagram
 initialDiagram =
     Diagram [] []
 
-addClass :: Diagram -> String -> Diagram
-addClass d@(Diagram items _) className = 
-    d { items = Class className : items}
+addItem :: Diagram -> Item -> Diagram
+addItem d@(Diagram items _) item = 
+    d { items = item : items}
     
-addLink :: Diagram -> Item -> Item -> Diagram
-addLink d@(Diagram _ links) i1 i2 =
-    d { links = Link i1 i2 : links }
+addLink :: Diagram -> Link -> Diagram
+addLink d@(Diagram _ links) link =
+    d { links = link : links }
 
 class PlantUmlable a where
     toPlantuml :: a -> String
