@@ -35,10 +35,14 @@ class PlantUmlable a where
 instance PlantUmlable Diagram where
     toPlantuml (Diagram items links) = 
         let
-            items' = reverse . map toPlantuml $ items
-            links' = map toPlantuml links
+            items' = toPlantuml items
+            links' = toPlantuml links
         in
-            unlines $ items' ++ links'
+            items' ++ links'
+
+instance PlantUmlable a => PlantUmlable [a] where
+    toPlantuml = 
+        unlines . reverse . map toPlantuml
 
 instance PlantUmlable Item where
     toPlantuml (Class className) = 
