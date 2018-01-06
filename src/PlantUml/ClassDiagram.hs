@@ -3,6 +3,7 @@
 {-# LANGUAGE InstanceSigs #-}
 
 module PlantUml.ClassDiagram where
+import Control.Monad.State
 
 data Diagram = Diagram {
     items :: [Item],
@@ -51,3 +52,23 @@ instance PlantUmlable Item where
 instance PlantUmlable Link where
     toPlantuml (Link (Class c1) (Class c2)) =
         c1 ++ " -> " ++ c2
+    
+type DiagramState a = State Diagram a
+
+clazz :: String -> DiagramState Item
+clazz className =
+    state $ \d -> 
+        let
+            c = Class className 
+            d' = addItem d c
+        in
+            (c, d')
+
+link :: Item -> Item -> DiagramState Link
+link i1 i2 =
+    state $ \d ->
+        let
+            l = Link i1 i2
+            d' = addLink d l
+        in
+            (l, d')
