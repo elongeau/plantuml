@@ -5,8 +5,11 @@
 module PlantUml.ClassDiagram (
     Diagram(Diagram),
     clazz,
+    clazz',
     link,
     toPlantuml,
+    Property(..),
+    Scope(..),
 )
 where
 
@@ -27,8 +30,8 @@ data Item =
 data Property = 
     Property {
         propertyScope :: Scope,
-        propertyName :: String,
-        propertyType :: String
+        propertyType :: String,
+        propertyName :: String
     }
     deriving (Eq, Show)
 
@@ -71,8 +74,23 @@ instance PlantUmlable a => PlantUmlable [a] where
         unlines . reverse . map toPlantuml
 
 instance PlantUmlable Item where
-    toPlantuml (Class className properties) =
+    toPlantuml (Class className []) =
         "class " ++ className 
+    toPlantuml (Class className properties) = 
+            "class " ++ className ++ " {\n" ++
+            toPlantuml properties ++
+            "}"
+
+
+instance PlantUmlable Property where
+    toPlantuml (Property scope propertyType propertyName) = 
+        "  " ++ toPlantuml scope ++ " " ++ propertyType ++ " " ++ propertyName
+
+instance PlantUmlable Scope where
+    toPlantuml Private = "-"
+    toPlantuml Protected = "#"
+    toPlantuml Packaged = "~"
+    toPlantuml Public = "+"
 
 instance PlantUmlable Link where
     toPlantuml (Link (Class c1 _) (Class c2 _)) =
@@ -86,9 +104,13 @@ instance PlantUmlable (DiagramState a) where
 
 clazz :: String -> DiagramState Item
 clazz className =
+    clazz' className []
+
+clazz' :: String -> [Property] -> DiagramState Item
+clazz' className properties =
     state $ \d ->
         let
-            c = Class className []
+            c = Class className properties
             d' = addItem d c
         in
             (c, d')
