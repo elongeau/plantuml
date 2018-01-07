@@ -18,7 +18,25 @@ data Diagram = Diagram {
 }
 
 data Item =
-    Class String
+    Class {
+        className :: String,
+        properties :: [Property]
+    }
+    deriving (Eq, Show)
+
+data Property = 
+    Property {
+        propertyScope :: Scope,
+        propertyName :: String,
+        propertyType :: String
+    }
+    deriving (Eq, Show)
+
+data Scope = 
+    Private
+    | Protected
+    | Packaged
+    | Public
     deriving (Eq, Show)
 
 data Link =
@@ -53,11 +71,11 @@ instance PlantUmlable a => PlantUmlable [a] where
         unlines . reverse . map toPlantuml
 
 instance PlantUmlable Item where
-    toPlantuml (Class className) =
-        "class " ++ className
+    toPlantuml (Class className properties) =
+        "class " ++ className 
 
 instance PlantUmlable Link where
-    toPlantuml (Link (Class c1) (Class c2)) =
+    toPlantuml (Link (Class c1 _) (Class c2 _)) =
         c1 ++ " -> " ++ c2
 
 type DiagramState a = State Diagram a
@@ -70,7 +88,7 @@ clazz :: String -> DiagramState Item
 clazz className =
     state $ \d ->
         let
-            c = Class className
+            c = Class className []
             d' = addItem d c
         in
             (c, d')

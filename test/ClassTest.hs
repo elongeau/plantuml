@@ -19,3 +19,14 @@ unit_CanUseDoNotation =
             "class Bar",
             "Foo -> Bar"
         ]
+
+unit_ClassHaveProperties :: IO ()
+unit_ClassHaveProperties = 
+    let
+        uml = toPlantuml $ clazz "Foo"
+    in
+        uml @?= unlines [
+            "class Foo {",
+            "  - String bar",
+            "}"
+        ]
