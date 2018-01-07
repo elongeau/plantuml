@@ -1,44 +1,74 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module PlantUml.ClassDiagram where
+import Control.Monad.State
 
-newtype Diagram a =
-   Diagram [a]
-   deriving (Show, Eq)
+data Diagram = Diagram {
+    items :: [Item],
+    links :: [Link]
+}
 
-data Class = 
-    Class { className :: String }
-    deriving (Show, Eq)
+data Item =
+    Class String
+    deriving (Eq, Show)
 
-data Relation =
-    Link { from :: Class, to :: Class }
-    deriving (Show, Eq)
+data Link = 
+    Link Item Item
+    deriving (Eq, Show)
 
-instance Functor Diagram where
-    fmap f (Diagram xs) = Diagram $ fmap f xs
+initialDiagram :: Diagram
+initialDiagram =
+    Diagram [] []
 
-class Plantuml a where
+addItem :: Diagram -> Item -> Diagram
+addItem d@(Diagram items _) item = 
+    d { items = item : items}
+    
+addLink :: Diagram -> Link -> Diagram
+addLink d@(Diagram _ links) link =
+    d { links = link : links }
+
+class PlantUmlable a where
     toPlantuml :: a -> String
+    
+instance PlantUmlable Diagram where
+    toPlantuml (Diagram items links) = 
+        let
+            items' = toPlantuml items
+            links' = toPlantuml links
+        in
+            items' ++ links'
 
-instance Plantuml Class where
-    toPlantuml (Class c) = 
-        "class " ++ c
+instance PlantUmlable a => PlantUmlable [a] where
+    toPlantuml = 
+        unlines . reverse . map toPlantuml
 
-instance Plantuml Relation where
-    toPlantuml (Link (Class f) (Class t)) = 
-        f ++ " -> " ++ t
+instance PlantUmlable Item where
+    toPlantuml (Class className) = 
+        "class " ++ className
 
-data Plantumlable =
-    forall a. (Plantuml a, Show a) => Plantumlable a
+instance PlantUmlable Link where
+    toPlantuml (Link (Class c1) (Class c2)) =
+        c1 ++ " -> " ++ c2
+    
+type DiagramState a = State Diagram a
 
-instance Show Plantumlable where
-    show (Plantumlable p) = show p 
+clazz :: String -> DiagramState Item
+clazz className =
+    state $ \d -> 
+        let
+            c = Class className 
+            d' = addItem d c
+        in
+            (c, d')
 
-instance Plantuml Plantumlable where
-    toPlantuml (Plantumlable a) = toPlantuml a
-
-instance Applicative Diagram where
-    pure d = Diagram [ d ]
-    (Diagram fs) <*> Diagram (xs) = Diagram $ fs <*> xs
+link :: Item -> Item -> DiagramState Link
+link i1 i2 =
+    state $ \d ->
+        let
+            l = Link i1 i2
+            d' = addLink d l
+        in
+            (l, d')
