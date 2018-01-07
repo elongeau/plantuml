@@ -9,11 +9,10 @@ import Control.Monad.State
 unit_CanUseDoNotation :: IO ()
 unit_CanUseDoNotation = 
     let
-        d = do
-                foo <- clazz "Foo"
-                bar <- clazz "Bar"
-                link foo bar
-        uml = toPlantuml . execState d $ initialDiagram
+        uml = toPlantuml $ do
+            foo <- clazz "Foo"
+            bar <- clazz "Bar"
+            link foo bar
     in
         uml @?= unlines [ 
             "class Foo",

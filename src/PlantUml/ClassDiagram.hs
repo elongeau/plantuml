@@ -7,7 +7,6 @@ module PlantUml.ClassDiagram (
     clazz,
     link,
     toPlantuml,
-    initialDiagram
 )
 where
 
@@ -62,6 +61,10 @@ instance PlantUmlable Link where
         c1 ++ " -> " ++ c2
 
 type DiagramState a = State Diagram a
+
+instance PlantUmlable (DiagramState a) where
+    toPlantuml s = 
+        toPlantuml . execState s $ initialDiagram
 
 clazz :: String -> DiagramState Item
 clazz className =
