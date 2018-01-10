@@ -24,10 +24,10 @@ unit_ClassHaveProperties =
     let
         uml = toPlantuml $ do
             foo <- clazz' "Foo" [
-                private String_ "bar"
+                private "String" "bar"
                 ]
             bar <- clazz' "Bar" [
-                private Int_ "i"
+                private "Int" "i"
                 ]
             link foo bar
     in
