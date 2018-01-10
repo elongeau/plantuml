@@ -3,8 +3,6 @@
 {-# LANGUAGE InstanceSigs #-}
 
 module PlantUml.ClassDiagram (
-    Diagram(Diagram),
-    Type(..),
     clazz,
     clazz',
     link,
@@ -17,6 +15,8 @@ module PlantUml.ClassDiagram (
 where
 
 import Control.Monad.State
+import PlantUml.Property
+import PlantUml.Plantumlable
 
 data Diagram = Diagram {
     items :: [Item],
@@ -29,41 +29,6 @@ data Item =
         properties :: [Property]
     }
     deriving (Eq, Show)
-
-data Property = 
-    Property {
-        propertyAccessLevel :: AccessLevel,
-        propertyType :: Type,
-        propertyName :: String
-    }
-    deriving (Eq, Show)
-
-data Type = 
-    Int_
-    | Bool_
-    | String_
-    | Char_
-    | T String
-    deriving (Eq, Show)
-
-data AccessLevel = 
-    Private
-    | Protected
-    | Packaged
-    | Public
-    deriving (Eq, Show)
-
-private :: Type -> String -> Property
-private = Property Private
-
-protected :: Type -> String -> Property
-protected = Property Protected
-
-packaged :: Type -> String -> Property
-packaged = Property Packaged
-
-public :: Type -> String -> Property
-public = Property Public
 
 data Link =
     Link Item Item
@@ -80,9 +45,6 @@ addItem d@(Diagram items _) item =
 addLink :: Diagram -> Link -> Diagram
 addLink d@(Diagram _ links) link =
     d { links = link : links }
-
-class PlantUmlable a where
-    toPlantuml :: a -> String
 
 instance PlantUmlable Diagram where
     toPlantuml (Diagram items links) =
@@ -104,22 +66,6 @@ instance PlantUmlable Item where
             toPlantuml properties ++
             "}"
 
-instance PlantUmlable Property where
-    toPlantuml (Property scope propertyType propertyName) = 
-        "  " ++ toPlantuml scope ++ " " ++ toPlantuml propertyType ++ " " ++ propertyName
-
-instance PlantUmlable Type where
-    toPlantuml Int_ = "Int"
-    toPlantuml Bool_ = "Bool"
-    toPlantuml String_ = "String"
-    toPlantuml Char_ = "Char"
-    toPlantuml (T type_) = type_
-
-instance PlantUmlable AccessLevel where
-    toPlantuml Private = "-"
-    toPlantuml Protected = "#"
-    toPlantuml Packaged = "~"
-    toPlantuml Public = "+"
 
 instance PlantUmlable Link where
     toPlantuml (Link (Class c1 _) (Class c2 _)) =
