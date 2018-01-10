@@ -8,8 +8,11 @@ module PlantUml.ClassDiagram (
     clazz',
     link,
     toPlantuml,
-    Property(..),
     Scope(..),
+    private,
+    protected,
+    packaged,
+    public
 )
 where
 
@@ -41,6 +44,18 @@ data Scope =
     | Packaged
     | Public
     deriving (Eq, Show)
+
+private :: String -> String -> Property
+private = Property Private
+
+protected :: String -> String -> Property
+protected = Property Protected
+
+packaged :: String -> String -> Property
+packaged = Property Packaged
+
+public :: String -> String -> Property
+public = Property Public
 
 data Link =
     Link Item Item

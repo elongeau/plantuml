@@ -23,12 +23,12 @@ unit_ClassHaveProperties :: IO ()
 unit_ClassHaveProperties = 
     let
         properties = [
-            Property Private "String" "bar"
+            private "String" "bar"
             ]
         uml = toPlantuml $ do
             foo <- clazz' "Foo" properties
             bar <- clazz' "Bar" [
-                Property Private "Int" "i"
+                private "Int" "i"
                 ]
             link foo bar
     in
