@@ -4,11 +4,11 @@
 
 module PlantUml.ClassDiagram (
     Diagram(Diagram),
+    Type(..),
     clazz,
     clazz',
     link,
     toPlantuml,
-    Scope(..),
     private,
     protected,
     packaged,
@@ -32,29 +32,37 @@ data Item =
 
 data Property = 
     Property {
-        propertyScope :: Scope,
-        propertyType :: String,
+        propertyAccessLevel :: AccessLevel,
+        propertyType :: Type,
         propertyName :: String
     }
     deriving (Eq, Show)
 
-data Scope = 
+data Type = 
+    Int_
+    | Bool_
+    | String_
+    | Char_
+    | T String
+    deriving (Eq, Show)
+
+data AccessLevel = 
     Private
     | Protected
     | Packaged
     | Public
     deriving (Eq, Show)
 
-private :: String -> String -> Property
+private :: Type -> String -> Property
 private = Property Private
 
-protected :: String -> String -> Property
+protected :: Type -> String -> Property
 protected = Property Protected
 
-packaged :: String -> String -> Property
+packaged :: Type -> String -> Property
 packaged = Property Packaged
 
-public :: String -> String -> Property
+public :: Type -> String -> Property
 public = Property Public
 
 data Link =
@@ -96,12 +104,18 @@ instance PlantUmlable Item where
             toPlantuml properties ++
             "}"
 
-
 instance PlantUmlable Property where
     toPlantuml (Property scope propertyType propertyName) = 
-        "  " ++ toPlantuml scope ++ " " ++ propertyType ++ " " ++ propertyName
+        "  " ++ toPlantuml scope ++ " " ++ toPlantuml propertyType ++ " " ++ propertyName
 
-instance PlantUmlable Scope where
+instance PlantUmlable Type where
+    toPlantuml Int_ = "Int"
+    toPlantuml Bool_ = "Bool"
+    toPlantuml String_ = "String"
+    toPlantuml Char_ = "Char"
+    toPlantuml (T type_) = type_
+
+instance PlantUmlable AccessLevel where
     toPlantuml Private = "-"
     toPlantuml Protected = "#"
     toPlantuml Packaged = "~"

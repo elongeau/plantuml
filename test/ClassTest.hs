@@ -22,13 +22,12 @@ unit_CreateASimpleDiagram =
 unit_ClassHaveProperties :: IO ()
 unit_ClassHaveProperties = 
     let
-        properties = [
-            private "String" "bar"
-            ]
         uml = toPlantuml $ do
-            foo <- clazz' "Foo" properties
+            foo <- clazz' "Foo" [
+                private String_ "bar"
+                ]
             bar <- clazz' "Bar" [
-                private "Int" "i"
+                private Int_ "i"
                 ]
             link foo bar
     in
