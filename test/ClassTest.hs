@@ -4,10 +4,9 @@ module ClassTest where
 
 import Test.Tasty.HUnit
 import PlantUml.ClassDiagram
-import Control.Monad.State
 
-unit_CanUseDoNotation :: IO ()
-unit_CanUseDoNotation = 
+unit_CreateASimpleDiagram :: IO ()
+unit_CreateASimpleDiagram = 
     let
         uml = toPlantuml $ do
             foo <- clazz "Foo"
@@ -17,5 +16,27 @@ unit_CanUseDoNotation =
         uml @?= unlines [ 
             "class Foo",
             "class Bar",
+            "Foo -> Bar"
+        ]
+
+unit_ClassHaveProperties :: IO ()
+unit_ClassHaveProperties = 
+    let
+        uml = toPlantuml $ do
+            foo <- clazz' "Foo" [
+                private String_ "bar"
+                ]
+            bar <- clazz' "Bar" [
+                private Int_ "i"
+                ]
+            link foo bar
+    in
+        uml @?= unlines [
+            "class Foo {",
+            "  - String bar",
+            "}",
+            "class Bar {",
+            "  - Int i",
+            "}",
             "Foo -> Bar"
         ]
