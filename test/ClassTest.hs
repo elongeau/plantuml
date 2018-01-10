@@ -25,10 +25,19 @@ unit_ClassHaveProperties =
         properties = [
             Property Private "String" "bar"
             ]
-        uml = toPlantuml $ clazz' "Foo" properties
+        uml = toPlantuml $ do
+            foo <- clazz' "Foo" properties
+            bar <- clazz' "Bar" [
+                Property Private "Int" "i"
+                ]
+            link foo bar
     in
         uml @?= unlines [
             "class Foo {",
             "  - String bar",
-            "}"
+            "}",
+            "class Bar {",
+            "  - Int i",
+            "}",
+            "Foo -> Bar"
         ]
